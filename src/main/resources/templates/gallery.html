@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+<title>Image Gallery</title>
+</head>
+<body>
+	<h1>The Image Gallery</h1>
+	<form th:action="@{/gallery/upload}"  method="post" enctype="multipart/form-data">
+		<fieldset>
+		<input type="file" name="file" accept="image/*"/><br/>
+		<input type="text" name="name" /> <br/>
+		<input type="submit" value="Hochladen!"/>
+		</fieldset>
+	</form>
+	<img alt="Cute kittens." th:src="@{/images/kittens.jpg}"/>
+	<img alt="Cute kittens." th:src="@{/gallery/showimage}"/>
+
+	<table>
+		<tr>
+			<th>ID</th>
+			<th>Name</th>
+			<th>Role</th>
+		</tr>
+		<tr th:each="user : ${users}">
+			<td th:text="${user.id}">(test ID)</td>
+			<td th:text="${user.userName}">(test name)</td>
+			<td th:text="${user.role}">(test role)</td>
+		</tr>
+	</table>
+</body>
+</html>
