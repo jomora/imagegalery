@@ -50,12 +50,15 @@ public class GreetingController {
 		List<Customer> users = service.findAll();
 		model.addAttribute("users", users);
 
-		Customer customer = service.findByName("asd");
-		model.addAttribute("images", customer.getImages());
+		Customer customer = service.findByName("jonas");
+		if (customer != null) {
+
+			model.addAttribute("images", customer.getImages());
+		}
 		return "gallery";
 	}
 
-	@RequestMapping("/register")
+	@RequestMapping(value = "/register", method = RequestMethod.POST)
 	public String register(@RequestParam(value = "username", required = true) String username,
 			@RequestParam(value = "password", required = true) String password) {
 		log.info("user " + username + ", password " + password);
@@ -64,14 +67,14 @@ public class GreetingController {
 
 		Customer customer = new Customer(username, password, "user");
 		service.addCustomer(customer);
-		return "login";
+		return "gallery";
 	}
 
 	@RequestMapping(value = "/gallery/upload", method = RequestMethod.POST)
-	public String upload(@RequestParam("name") String name, @RequestParam("file") MultipartFile file) {
+	public String upload(@RequestParam("name") String name, @RequestParam("file") MultipartFile file,Model model) {
 		if (!file.isEmpty()) {
 			try {
-				Customer customer = service.findByName("asd");
+				Customer customer = service.findByName("jonas");
 				byte[] bytes = file.getBytes();
 				Image image = new Image();
 				image.setCustomer(customer);
@@ -80,7 +83,11 @@ public class GreetingController {
 				imageService.add(image);
 			} catch (Exception e) {
 			}
+		} else {
+			log.info("file is empty");
 		}
+		List<Image> images = imageService.findAll();
+		model.addAttribute("images", images);
 		return "gallery :: imageRow";
 	}
 
@@ -88,7 +95,7 @@ public class GreetingController {
 	private ResponseEntity<byte[]> showImage() {
 		final HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.IMAGE_PNG);
-		Customer customer = service.findByName("asd");
+		Customer customer = service.findByName("jonas");
 		return new ResponseEntity<byte[]>(
 				customer.getImages().isEmpty() ? new byte[0] : customer.getImages().get(0).getImage(),
 				HttpStatus.CREATED);
@@ -96,7 +103,7 @@ public class GreetingController {
 
 	@RequestMapping("/gallery/showimage2")
 	private String showImage2(Model model) {
-		Customer customer = service.findByName("asd");
+		Customer customer = service.findByName("jonas");
 		// List<Image> images = customer.getImages();
 		// model.addAttribute("images",images);
 		// log.info("image slength: " + images.size());
@@ -110,7 +117,7 @@ public class GreetingController {
 
 	@RequestMapping("/gallery/search/{searchQuery}")
 	private String remoteSearchWithQuery(@PathVariable(value = "searchQuery") String searchQuery, Model model) {
-		Customer customer = service.findByName("asd");
+		Customer customer = service.findByName("jonas");
 		model.addAttribute("images", customer.getImages());
 		List<Image> images = new ArrayList<>();
 		Pattern pattern = Pattern.compile(".*" + searchQuery + ".*");
@@ -127,7 +134,7 @@ public class GreetingController {
 
 	@RequestMapping("/gallery/search/")
 	private String remoteSearch(Model model) {
-		Customer customer = service.findByName("asd");
+		Customer customer = service.findByName("jonas");
 		model.addAttribute("images", customer.getImages());
 		return "imageRow :: resultsList";
 	}

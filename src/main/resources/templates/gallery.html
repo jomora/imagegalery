@@ -46,12 +46,16 @@
 					<div class="form-group">
 						<input type="file" name="file" accept="image/*"
 							aria-describedby="basic-addon2" id="fileUpload"
-							value="Bild auswählen!"></input>
+							value="Bild auswählen!" style="color: white"></input>
 					</div>
+
 					<div class="form-group">
 						<input id="fileName" type="text" name="name"
-							placeholder="Bildname ..." /> <input type="submit"
-							class="btn btn-default btn-lg"></input>
+							placeholder="Bildname ..." />
+					</div>
+					<div class="form-group">
+						<input type="submit" class="btn btn-default btn-sm"
+							value="Hochladen"></input>
 					</div>
 				</form>
 
@@ -61,6 +65,12 @@
 							onkeyup="search(this)" />
 					</div>
 				</form>
+				<form  class="navbar-form navbar-left">
+					<div class="form-group">
+						<input type="submit" class="btn btn-default btn-sm"
+							value="Logout"></input>
+					</div>
+				</form>
 			</div>
 			<!--/.nav-collapse -->
 		</div>
@@ -68,32 +78,6 @@
 
 	<div class="container">
 		<div class="starter-template">
-			<div class="row">
-				<div class="col-md-6">
-					<form>
-						<div class="form-group">
-							<label for="exampleInputEmail1">Email address</label> <input
-								type="email" class="form-control" id="exampleInputEmail1"
-								placeholder="Email" />
-						</div>
-						<div class="form-group">
-							<label for="exampleInputPassword1">Password</label> <input
-								type="password" class="form-control" id="exampleInputPassword1"
-								placeholder="Password" />
-						</div>
-						<div class="form-group">
-							<label for="exampleInputFile">File input</label> <input
-								type="file" id="exampleInputFile" />
-							<p class="help-block">Upload your file here.</p>
-						</div>
-						<div class="checkbox">
-							<label> <input type="checkbox" /> Check me out
-							</label>
-						</div>
-						<button type="submit" class="btn btn-default">Submit</button>
-					</form>
-				</div>
-			</div>
 			<div class="row" id="imageRow">
 				<div class="col-md-4 imageCol" th:each="image : ${images}">
 					<div
@@ -107,19 +91,6 @@
 				</div>
 			</div>
 			<div id="hiddenImages"></div>
-			<!-- 			<table>
-				<tr>
-					<th>ID</th>
-					<th>Name</th>
-					<th>Role</th>
-				</tr>
-				<tr th:each="user : ${users}">
-					<td th:text="${user.id}">(test ID)</td>
-					<td th:text="${user.userName}">(test name)</td>
-					<td th:text="${user.role}">(test role)</td>
-				</tr>
-			</table>
- -->
 		</div>
 	</div>
 </body>

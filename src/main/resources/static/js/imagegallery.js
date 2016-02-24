@@ -38,6 +38,10 @@ function search(elem) {
 	}, 200);
 }
 
+function upload(elem){
+	alert();
+}
+
 function remoteSearch(elem) {
 	var path = 'http://localhost:8080/gallery/search/' + elem.value;
 	console.log(path);
