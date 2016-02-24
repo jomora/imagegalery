@@ -1,4 +1,4 @@
-- Table: public.customer
+-- Table: public.customer
 
 -- DROP TABLE public.customer;
 
@@ -13,10 +13,16 @@ CREATE TABLE public.customer
 WITH (
   OIDS=FALSE
 );
+
 ALTER TABLE public.customer
   OWNER TO postgres;
 
-  
+-- Constraint: public.customer_pk
+
+-- ALTER TABLE public.customer DROP CONSTRAINT customer_pk;
+
+ALTER TABLE public.customer
+  ADD CONSTRAINT customer_pk PRIMARY KEY(id);  
   -- Table: public.image
 
 -- DROP TABLE public.image;
@@ -37,3 +43,19 @@ WITH (
 );
 ALTER TABLE public.image
   OWNER TO postgres;
+
+  -- Constraint: public.image_pk
+
+-- ALTER TABLE public.image DROP CONSTRAINT image_pk;
+
+ALTER TABLE public.image
+  ADD CONSTRAINT image_pk PRIMARY KEY(id);
+
+  -- Foreign Key: public.image_user_fk
+
+-- ALTER TABLE public.image DROP CONSTRAINT image_user_fk;
+
+ALTER TABLE public.image
+  ADD CONSTRAINT image_user_fk FOREIGN KEY (customer_id)
+      REFERENCES public.customer (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION;
