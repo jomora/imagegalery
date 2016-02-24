@@ -1,3 +1,42 @@
+-- Sequence: public."Customer_ID_seq"
+
+-- DROP SEQUENCE public."Customer_ID_seq";
+
+CREATE SEQUENCE public."Customer_ID_seq"
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 1
+  CACHE 1;
+ALTER TABLE public."Customer_ID_seq"
+  OWNER TO postgres;
+
+  -- Sequence: public.hibernate_sequence
+
+-- DROP SEQUENCE public.hibernate_sequence;
+
+CREATE SEQUENCE public.hibernate_sequence
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 13
+  CACHE 1;
+ALTER TABLE public.hibernate_sequence
+  OWNER TO postgres;
+
+-- Sequence: public.image_id_seq
+
+-- DROP SEQUENCE public.image_id_seq;
+
+CREATE SEQUENCE public.image_id_seq
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 1
+  CACHE 1;
+ALTER TABLE public.image_id_seq
+  OWNER TO postgres;
+
 -- Table: public.customer
 
 -- DROP TABLE public.customer;
