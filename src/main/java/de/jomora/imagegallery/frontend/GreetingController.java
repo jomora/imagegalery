@@ -65,7 +65,7 @@ public class GreetingController {
 		checkNotNull(username);
 		checkNotNull(password);
 
-		Customer customer = new Customer(username, password, "user");
+		Customer customer = new Customer(username, password);
 		service.addCustomer(customer);
 		return "gallery";
 	}

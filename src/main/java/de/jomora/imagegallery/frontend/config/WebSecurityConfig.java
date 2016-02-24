@@ -17,7 +17,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Override
 	public void configure(HttpSecurity http) throws Exception {
-		http.csrf().disable().authorizeRequests().antMatchers("/", "/greeting").permitAll().anyRequest().permitAll().and()
+		http.authorizeRequests().antMatchers("/", "/greeting").permitAll().and()
 				.formLogin().loginPage("/login").permitAll().and().logout().permitAll();
 
 	}
@@ -30,8 +30,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	public void configAuthentication(AuthenticationManagerBuilder auth) throws Exception {
 		auth.jdbcAuthentication().dataSource(dataSource)
-				.usersByUsernameQuery("select Name,Password from User where Name=?")
-				.authoritiesByUsernameQuery("select Name, Role from User where Name=?");
+				.usersByUsernameQuery("select user_name,password,enabled from customer where user_name=?")
+				.authoritiesByUsernameQuery("select user_name, authority from authority where user_name=?");
 
 	}
 }
