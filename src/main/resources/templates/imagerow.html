@@ -19,12 +19,11 @@
 <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 <meta name="description" content="Image Gallery"></meta>
 <meta name="author" content="Jonas Molina Ramirez"></meta>
-<meta name="viewport" content="width=device-width, initial-scale=1" />
 
 </head>
 <body>
 	<nav class="navbar navbar-inverse navbar-fixed-top">
-		<div class="container-fluid">
+		<div class="container">
 			<div class="navbar-header">
 				<button type="button" class="navbar-toggle collapsed"
 					data-toggle="collapse" data-target="#navbar" aria-expanded="false"
@@ -33,81 +32,51 @@
 						class="icon-bar"></span> <span class="icon-bar"></span> <span
 						class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand" href="#">Image Gallery</a>
+				<a class="navbar-brand" href="#">Project name</a>
 			</div>
 			<div id="navbar" class="collapse navbar-collapse">
 				<ul class="nav navbar-nav">
 					<li class="active"><a href="#">Home</a></li>
-					<!-- 					<li><a href="#about">About</a></li>
-					<li><a href="#contact">Contact</a></li> -->
+					<li><a href="#about">About</a></li>
+					<li><a href="#contact">Contact</a></li>
 				</ul>
-				<form th:action="@{/gallery/upload}" method="post"
-					enctype="multipart/form-data" class="navbar-form navbar-left">
-					<div class="form-group">
-						<input type="file" name="file" accept="image/*"
-							aria-describedby="basic-addon2" id="fileUpload"
-							value="Bild auswählen!"></input>
-					</div>
-					<div class="form-group">
-						<input id="fileName" type="text" name="name"
-							placeholder="Bildname ..." /> <input type="submit"
-							class="btn btn-default btn-lg"></input>
-					</div>
-				</form>
-
-				<form class="navbar-form navbar-left" role="search">
-					<div class="form-group">
-						<input type="text" class="form-control" placeholder="Search"
-							onkeyup="search(this)" />
-					</div>
-				</form>
 			</div>
 			<!--/.nav-collapse -->
 		</div>
 	</nav>
 
+
 	<div class="container">
+
 		<div class="starter-template">
-			<div class="row">
-				<div class="col-md-6">
-					<form>
-						<div class="form-group">
-							<label for="exampleInputEmail1">Email address</label> <input
-								type="email" class="form-control" id="exampleInputEmail1"
-								placeholder="Email" />
-						</div>
-						<div class="form-group">
-							<label for="exampleInputPassword1">Password</label> <input
-								type="password" class="form-control" id="exampleInputPassword1"
-								placeholder="Password" />
-						</div>
-						<div class="form-group">
-							<label for="exampleInputFile">File input</label> <input
-								type="file" id="exampleInputFile" />
-							<p class="help-block">Upload your file here.</p>
-						</div>
-						<div class="checkbox">
-							<label> <input type="checkbox" /> Check me out
-							</label>
-						</div>
-						<button type="submit" class="btn btn-default">Submit</button>
-					</form>
-				</div>
+			<h1>The Image Gallery</h1>
+			<br />
+			<form th:action="@{/gallery/upload}" method="post"
+				enctype="multipart/form-data">
+				<fieldset>
+					<input type="file" name="file" accept="image/*" /><br /> <label
+						for="fileName">File Name:</label><input id="fileName" type="text"
+						name="name" /> <br /> <input type="submit" value="Hochladen!" />
+				</fieldset>
+			</form>
+			<div>
+				<form>
+					<label for="searchInput">Suche:</label> <input type="text"
+						id="searchInput" name="searchInput" onchange="remotesearch(this)" />
+				</form>
 			</div>
-			<div class="row" id="imageRow">
-				<div class="col-md-4 imageCol" th:each="image : ${images}">
+			<div class="row" id="image-row" th:fragment="resultsList">
+				<div class="col-md-4" th:each="image : ${images}">
 					<div
 						style="padding: 5% 5% 5% 5%; width: 150px; height: 150px; margin: 5% 5% 5% 5%">
 						<img class="img-responsive img-thumbnail" th:alt="${image.name}"
 							th:src="@{'data:image/png;base64,'+ ${image.encodeBase64()}}" />
 						<br />
-						<p class="imageName" th:text="${image.name}">(Image name
-							missing!)</p>
+						<p class="imageName" th:text="${image.name}">(Image name missing!)</p>
 					</div>
 				</div>
 			</div>
-			<div id="hiddenImages"></div>
-			<!-- 			<table>
+			<table>
 				<tr>
 					<th>ID</th>
 					<th>Name</th>
@@ -119,8 +88,9 @@
 					<td th:text="${user.role}">(test role)</td>
 				</tr>
 			</table>
- -->
+
 		</div>
 	</div>
+
 </body>
 </html>

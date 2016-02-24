@@ -11,8 +11,8 @@ import javax.persistence.OneToMany;
 
 @Entity
 public class Customer {
-	
-	@OneToMany(mappedBy = "customerId")
+
+	@OneToMany(mappedBy = "customer")
 	private List<Image> images;
 
 	public List<Image> getImages() {

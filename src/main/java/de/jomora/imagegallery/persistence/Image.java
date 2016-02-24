@@ -9,10 +9,12 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import org.apache.commons.codec.binary.Base64;
+
 @Entity
 public class Image {
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "customerId", referencedColumnName = "id", insertable = false, updatable = false)
+	@JoinColumn(name = "customerId", referencedColumnName = "id", nullable = false)
 	private Customer customer;
 
 	@Id
@@ -20,12 +22,13 @@ public class Image {
 	private Integer id;
 
 	@Column
-	private Integer customerId;
-
-	@Column
 	private byte[] image;
 	@Column
 	private String name;
+
+	public String encodeBase64() {
+		return Base64.encodeBase64String(image);
+	}
 
 	public String getName() {
 		return name;
@@ -49,14 +52,6 @@ public class Image {
 
 	public void setId(Integer id) {
 		this.id = id;
-	}
-
-	public Integer getCustomerId() {
-		return customerId;
-	}
-
-	public void setCustomerId(Integer customerId) {
-		this.customerId = customerId;
 	}
 
 	public byte[] getImage() {

@@ -2,17 +2,22 @@ package de.jomora.imagegallery.frontend;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
+import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.cache.CacheProperties.Guava;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -44,6 +49,9 @@ public class GreetingController {
 	public String gallery(Model model) {
 		List<Customer> users = service.findAll();
 		model.addAttribute("users", users);
+
+		Customer customer = service.findByName("asd");
+		model.addAttribute("images", customer.getImages());
 		return "gallery";
 	}
 
@@ -69,12 +77,11 @@ public class GreetingController {
 				image.setCustomer(customer);
 				image.setImage(bytes);
 				image.setName(name);
-				image.setCustomerId(customer.getId());
 				imageService.add(image);
 			} catch (Exception e) {
 			}
 		}
-		return "gallery";
+		return "gallery :: imageRow";
 	}
 
 	@RequestMapping("/gallery/showimage")
@@ -86,4 +93,43 @@ public class GreetingController {
 				customer.getImages().isEmpty() ? new byte[0] : customer.getImages().get(0).getImage(),
 				HttpStatus.CREATED);
 	}
+
+	@RequestMapping("/gallery/showimage2")
+	private String showImage2(Model model) {
+		Customer customer = service.findByName("asd");
+		// List<Image> images = customer.getImages();
+		// model.addAttribute("images",images);
+		// log.info("image slength: " + images.size());
+
+		List<String> images = new ArrayList<>();
+		for (Image i : customer.getImages()) {
+			images.add(new String(Base64.encodeBase64(i.getImage())));
+		}
+		return "gallery";
+	}
+
+	@RequestMapping("/gallery/search/{searchQuery}")
+	private String remoteSearchWithQuery(@PathVariable(value = "searchQuery") String searchQuery, Model model) {
+		Customer customer = service.findByName("asd");
+		model.addAttribute("images", customer.getImages());
+		List<Image> images = new ArrayList<>();
+		Pattern pattern = Pattern.compile(".*" + searchQuery + ".*");
+		for (Image image : customer.getImages()) {
+			if (pattern.matcher(image.getName()).matches()) {
+				images.add(image);
+				log.info("added " + image.getName());
+			}
+		}
+		log.info(searchQuery);
+		model.addAttribute("images", images);
+		return "imageRow :: resultsList";
+	}
+
+	@RequestMapping("/gallery/search/")
+	private String remoteSearch(Model model) {
+		Customer customer = service.findByName("asd");
+		model.addAttribute("images", customer.getImages());
+		return "imageRow :: resultsList";
+	}
+
 }
