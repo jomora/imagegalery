@@ -23,6 +23,7 @@ public class Image {
 
 	@Column
 	private byte[] image;
+	
 	@Column
 	private String name;
 

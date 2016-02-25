@@ -1,5 +1,7 @@
 package de.jomora.imagegallery.persistence;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -16,7 +18,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "authority")
-public class Authority {
+public class Authority  implements Serializable{
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_name",referencedColumnName="user_name",nullable = false)
@@ -32,6 +34,14 @@ public class Authority {
 
 	public Integer getId() {
 		return id;
+	}
+
+	public Customer getCustomer() {
+		return customer;
+	}
+
+	public void setCustomer(Customer customer) {
+		this.customer = customer;
 	}
 
 	public void setId(Integer id) {

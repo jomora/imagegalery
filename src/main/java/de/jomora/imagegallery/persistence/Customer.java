@@ -1,5 +1,6 @@
 package de.jomora.imagegallery.persistence;
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -10,7 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
 @Entity
-public class Customer {
+public class Customer implements Serializable{
 
 	@OneToMany(mappedBy = "customer")
 	private List<Image> images;
@@ -21,10 +22,11 @@ public class Customer {
 	public Customer() {
 	}
 
-	public Customer(String userName, String password) {
+	public Customer(String userName, String password,Boolean enabled) {
 		super();
 		this.userName = userName;
 		this.password = password;
+		this.enabled = enabled;
 	}
 
 	@Id

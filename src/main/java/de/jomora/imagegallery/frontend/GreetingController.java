@@ -4,27 +4,26 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
-import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.cache.CacheProperties.Guava;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import de.jomora.imagegallery.backend.services.CustomerService;
 import de.jomora.imagegallery.backend.services.ImageService;
+import de.jomora.imagegallery.persistence.Authority;
 import de.jomora.imagegallery.persistence.Customer;
 import de.jomora.imagegallery.persistence.Image;
 
@@ -45,98 +44,98 @@ public class GreetingController {
 		return "greeting";
 	}
 
-	@RequestMapping("/gallery")
+	@RequestMapping(value = "/gallery", method = RequestMethod.GET)
 	public String gallery(Model model) {
+		log.info("called gallery GET");
 		List<Customer> users = service.findAll();
 		model.addAttribute("users", users);
-
-		Customer customer = service.findByName("jonas");
+		String username = getCurrentPrincipalUsername();
+		Customer customer = service.findByName(username);
 		if (customer != null) {
-
 			model.addAttribute("images", customer.getImages());
 		}
 		return "gallery";
 	}
 
-	@RequestMapping(value = "/register", method = RequestMethod.POST)
-	public String register(@RequestParam(value = "username", required = true) String username,
-			@RequestParam(value = "password", required = true) String password) {
-		log.info("user " + username + ", password " + password);
-		checkNotNull(username);
-		checkNotNull(password);
-
-		Customer customer = new Customer(username, password);
-		service.addCustomer(customer);
-		return "gallery";
-	}
-
-	@RequestMapping(value = "/gallery/upload", method = RequestMethod.POST)
-	public String upload(@RequestParam("name") String name, @RequestParam("file") MultipartFile file,Model model) {
-		if (!file.isEmpty()) {
-			try {
-				Customer customer = service.findByName("jonas");
-				byte[] bytes = file.getBytes();
-				Image image = new Image();
-				image.setCustomer(customer);
-				image.setImage(bytes);
-				image.setName(name);
-				imageService.add(image);
-			} catch (Exception e) {
-			}
+	private String getCurrentPrincipalUsername() {
+		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		String username;
+		if (principal instanceof UserDetails) {
+			username = ((UserDetails) principal).getUsername();
 		} else {
-			log.info("file is empty");
+			username = "";
 		}
-		List<Image> images = imageService.findAll();
+		log.info("Current principal's username: " + username);
+		return username;
+	}
+
+	@RequestMapping(value = "/registration", method = RequestMethod.GET)
+	public String registrationPage(Model model) {
+		model.addAttribute("regdto", new RegistrationDTO());
+		return "registration";
+	}
+
+	@RequestMapping(value = "/registration", method = RequestMethod.POST)
+	public String register(@ModelAttribute RegistrationDTO registrationDto, Model model) {
+		log.info("user " + registrationDto.getUsername() + ", password " + registrationDto.getPassword());
+		checkNotNull(registrationDto.getUsername());
+		checkNotNull(registrationDto.getPassword());
+		Authority auth = new Authority();
+		auth.setAuthority("ROLE_USER");
+		Customer customer = new Customer(registrationDto.getUsername(), registrationDto.getPassword(), true);
+
+		customer.setAuthorities(new ArrayList<Authority>());
+		customer.getAuthorities().add(auth);
+		Customer tmpCustomer = service.addCustomer(customer);
+		auth.setCustomer(tmpCustomer);
+		service.addAuthorityOfCustomer(auth);
+		return "login";
+	}
+
+	@RequestMapping(value = "/gallery", method = RequestMethod.POST)
+	public String upload(@RequestParam("file") MultipartFile file, Model model) {
+		log.info("called gallery POST");
+		Customer customer = service.findByName(getCurrentPrincipalUsername());
+		try {
+			String fileName = file.getOriginalFilename();
+
+			byte[] bytes = file.getBytes();
+			Image image = new Image();
+			image.setCustomer(customer);
+			image.setImage(bytes);
+			image.setName(fileName);
+			imageService.add(image);
+			log.info("Stored image: " + image.toString());
+		} catch (Exception e) {
+		}
+		List<Image> images = customer.getImages();
 		model.addAttribute("images", images);
-		return "gallery :: imageRow";
-	}
-
-	@RequestMapping("/gallery/showimage")
-	private ResponseEntity<byte[]> showImage() {
-		final HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.IMAGE_PNG);
-		Customer customer = service.findByName("jonas");
-		return new ResponseEntity<byte[]>(
-				customer.getImages().isEmpty() ? new byte[0] : customer.getImages().get(0).getImage(),
-				HttpStatus.CREATED);
-	}
-
-	@RequestMapping("/gallery/showimage2")
-	private String showImage2(Model model) {
-		Customer customer = service.findByName("jonas");
-		// List<Image> images = customer.getImages();
-		// model.addAttribute("images",images);
-		// log.info("image slength: " + images.size());
-
-		List<String> images = new ArrayList<>();
-		for (Image i : customer.getImages()) {
-			images.add(new String(Base64.encodeBase64(i.getImage())));
-		}
 		return "gallery";
+		// return "gallery :: imageRow";
 	}
 
-	@RequestMapping("/gallery/search/{searchQuery}")
-	private String remoteSearchWithQuery(@PathVariable(value = "searchQuery") String searchQuery, Model model) {
-		Customer customer = service.findByName("jonas");
-		model.addAttribute("images", customer.getImages());
-		List<Image> images = new ArrayList<>();
-		Pattern pattern = Pattern.compile(".*" + searchQuery + ".*");
-		for (Image image : customer.getImages()) {
-			if (pattern.matcher(image.getName()).matches()) {
-				images.add(image);
-				log.info("added " + image.getName());
-			}
-		}
-		log.info(searchQuery);
-		model.addAttribute("images", images);
-		return "imageRow :: resultsList";
-	}
-
-	@RequestMapping("/gallery/search/")
-	private String remoteSearch(Model model) {
-		Customer customer = service.findByName("jonas");
-		model.addAttribute("images", customer.getImages());
-		return "imageRow :: resultsList";
-	}
-
+	// @RequestMapping("/gallery/search/{searchQuery}")
+	// private String remoteSearchWithQuery(@PathVariable(value = "searchQuery")
+	// String searchQuery, Model model) {
+	// Customer customer = service.findByName("jonas");
+	// model.addAttribute("images", customer.getImages());
+	// List<Image> images = new ArrayList<>();
+	// Pattern pattern = Pattern.compile(".*" + searchQuery + ".*");
+	// for (Image image : customer.getImages()) {
+	// if (pattern.matcher(image.getName()).matches()) {
+	// images.add(image);
+	// log.info("added " + image.getName());
+	// }
+	// }
+	// log.info(searchQuery);
+	// model.addAttribute("images", images);
+	// return "imageRow :: resultsList";
+	// }
+	//
+	// @RequestMapping("/gallery/search/")
+	// private String remoteSearch(Model model) {
+	// Customer customer = service.findByName("jonas");
+	// model.addAttribute("images", customer.getImages());
+	// return "imageRow :: resultsList";
+	// }
 }

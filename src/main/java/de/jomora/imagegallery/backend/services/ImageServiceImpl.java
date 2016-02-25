@@ -9,6 +9,7 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import de.jomora.imagegallery.persistence.Customer;
 import de.jomora.imagegallery.persistence.Image;
 import de.jomora.imagegallery.persistence.ImageRepository;
 
@@ -29,5 +30,6 @@ public class ImageServiceImpl implements ImageService {
 	public List<Image> findAll() {
 		return imageRepo.findAll();
 	}
+
 
 }
