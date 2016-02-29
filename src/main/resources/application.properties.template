@@ -1,5 +1,7 @@
 security.basic.enabled=true
-
+spring.thymeleaf.cache=false
+multipart.maxFileSize=5MB
+multipart.maxRequestSize=5MB
 #info.product.name=@project.name@
 #info.product.version=@project.version@
 #info.build.branch=trunk

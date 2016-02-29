@@ -39,7 +39,7 @@ function search(elem) {
 
 
 
-function remoteSearch(elem) {
+function upload(elem) {
 	var path = 'http://localhost:8080/gallery/search/' + elem.value;
 	console.log(path);
 	$('#imageRow').load(path)

@@ -1,11 +1,11 @@
 
-DROP TABLE public.image;
-DROP TABLE public.authority;
-DROP TABLE public.customer;
-DROP SEQUENCE public.hibernate_sequence;
-DROP SEQUENCE public.image_id_seq;
-DROP SEQUENCE public.authorities_id_seq;
-DROP SEQUENCE public."Customer_ID_seq";
+DROP TABLE IF EXISTS public.image;
+DROP TABLE IF EXISTS public.authority;
+DROP TABLE IF EXISTS public.customer;
+DROP SEQUENCE IF EXISTS public.hibernate_sequence;
+DROP SEQUENCE IF EXISTS public.image_id_seq;
+DROP SEQUENCE IF EXISTS public.authorities_id_seq;
+DROP SEQUENCE IF EXISTS public."Customer_ID_seq";
 
 -- Sequence: public."Customer_ID_seq"
 
