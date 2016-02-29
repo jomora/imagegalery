@@ -36,6 +36,8 @@ public class GreetingController {
 	@Autowired
 	private ImageService imageService;
 
+	
+	
 	@RequestMapping("/greeting")
 	public String greeting(@RequestParam(value = "name", required = false, defaultValue = "World") String name,
 			Model model) {
@@ -92,7 +94,7 @@ public class GreetingController {
 		return "login";
 	}
 
-	@RequestMapping(value = "/gallery", method = RequestMethod.POST)
+	@RequestMapping(value = "/gallery",params = {"addImage"}, method = RequestMethod.POST)
 	public String upload(@RequestParam("file") MultipartFile file, Model model) {
 		log.info("called gallery POST");
 		Customer customer = service.findByName(getCurrentPrincipalUsername());

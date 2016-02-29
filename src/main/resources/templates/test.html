@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <head>
+        <title>Test</title>
+    </head>
+    <body>
+    <h1>Test</h1>
+    <form th:action="@{/test/entity}" method="post" th:object="${dto}">
+    	<input type="text" th:field="*{nase}" name="nase" />
+    	<button type="submit" th:text="'Do it'"></button>
+    </form>
+    </body>
+</html>

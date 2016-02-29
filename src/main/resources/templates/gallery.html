@@ -39,10 +39,9 @@
 				<a class="navbar-brand" href="#">Image Gallery</a>
 			</div>
 			<div id="navbar" class="collapse navbar-collapse">
-				<form method="post" th:action="@{/gallery}"
-					enctype="multipart/form-data" class="navbar-form navbar-left">
-					<!-- <form class="navbar-form navbar-left" id="uploadFileForm">
- -->
+				<!-- 			<form method="post" th:action="@{/gallery}"
+					enctype="multipart/form-data" class="navbar-form navbar-left"> -->
+				<form class="navbar-form navbar-left" id="uploadFileForm">
 					<div class="form-group">
 						<input type="file" name="file" accept="image/*"
 							aria-describedby="basic-addon2" id="uploadFileInput"
@@ -54,11 +53,10 @@
 							placeholder="Bildname ..." />
 					</div>
 					<div class="form-group">
-						<input type="submit" class="btn btn-default btn-sm"
-							value="Hochladen"></input>
+						<button type="submit" class="btn btn-default btn-sm"
+							value="Hochladen" name="addImage"></button>
 					</div>
 				</form>
-
 				<form class="navbar-form navbar-left" role="search">
 					<div class="form-group">
 						<input type="text" class="form-control" placeholder="Search"

@@ -23,10 +23,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		// Be carefule with the ordering of the method calls. Call more strict
 		// rules before less strict ones.
 		http.authorizeRequests().antMatchers("/gallery").authenticated()
-				.antMatchers("/registration").permitAll()
+				.antMatchers("/registration","/test/**").permitAll()
 				.antMatchers("/bootstrap-3.3.6-dist/**", "/js/*", "/css/*").permitAll().anyRequest().authenticated()
 				.and().formLogin().loginPage("/login").usernameParameter("username").passwordParameter("password")
-				.permitAll().defaultSuccessUrl("/gallery").failureUrl("/login").and().logout().permitAll().and().csrf();
+				.permitAll().defaultSuccessUrl("/gallery").failureUrl("/login-failed").and().logout().permitAll().and().csrf();
 	}
 
 	@Autowired
