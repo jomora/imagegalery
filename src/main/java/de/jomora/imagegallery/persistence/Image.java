@@ -23,9 +23,20 @@ public class Image {
 
 	@Column
 	private byte[] image;
-	
+
 	@Column
 	private String name;
+
+	@Column(name = "display_name")
+	private String displayName;
+
+	public String getDisplayName() {
+		return displayName;
+	}
+
+	public void setDisplayName(String displayName) {
+		this.displayName = displayName;
+	}
 
 	public String encodeBase64() {
 		return Base64.encodeBase64String(image);

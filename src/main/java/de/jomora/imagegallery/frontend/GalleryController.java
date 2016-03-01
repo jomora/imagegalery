@@ -31,24 +31,30 @@ public class GalleryController {
 	private ImageService imageService;
 
 	@RequestMapping(params = { "addImage" }, method = RequestMethod.POST)
-	public String upload(@RequestParam("file") MultipartFile file, Model model) {
+	public String upload(@RequestParam("file") MultipartFile file, Model model,@RequestParam("displayName") String displayName) {
 		log.info("called gallery POST");
 		Customer customer = service.findByName(getCurrentPrincipalUsername());
 		try {
 			String fileName = file.getOriginalFilename();
 
 			byte[] bytes = file.getBytes();
-			Image image = new Image();
-			image.setCustomer(customer);
-			image.setImage(bytes);
-			image.setName(fileName);
-			imageService.add(image);
-			log.info("Stored image: " + image.toString());
+			if (bytes.length > 0) {
+
+				Image image = new Image();
+				image.setCustomer(customer);
+				image.setImage(bytes);
+				image.setName(fileName);
+//				String displayName = (String) model.asMap().get("displayName");
+				log.info("displayname: " + displayName);
+				image.setDisplayName(displayName);
+				imageService.add(image);
+				log.info("Stored image: " + image.toString());
+			}
 		} catch (Exception e) {
 		}
 		List<Image> images = customer.getImages();
 		model.addAttribute("images", images);
-		return "gallery :: imageRow";
+		return "gallery";
 		// return "gallery :: imageRow";
 	}
 

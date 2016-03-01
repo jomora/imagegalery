@@ -62,9 +62,12 @@ ALTER TABLE public.customer
 CREATE TABLE public.authority
 (
   id bigint NOT NULL DEFAULT nextval('authorities_id_seq'::regclass),
-  user_name character varying(80),
+  customer_id bigint NOT NULL,
   authority character varying(80),
-  CONSTRAINT authority_pk PRIMARY KEY (id)
+  CONSTRAINT authority_pk PRIMARY KEY (id),
+   CONSTRAINT authority_user_fk FOREIGN KEY (customer_id)
+      REFERENCES public.customer (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
 )
 WITH (
   OIDS=FALSE
@@ -79,6 +82,7 @@ CREATE TABLE public.image
   customer_id bigint NOT NULL,
   image bytea NOT NULL,
   name character varying(80),
+  display_name character varying(80),
   CONSTRAINT image_pk PRIMARY KEY (id),
   CONSTRAINT image_user_fk FOREIGN KEY (customer_id)
       REFERENCES public.customer (id) MATCH SIMPLE

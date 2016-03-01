@@ -41,7 +41,6 @@
 			<div id="navbar" class="collapse navbar-collapse">
 				<form method="post" th:action="@{/gallery}"
 					enctype="multipart/form-data" class="navbar-form navbar-left">
-					<!-- 				<form class="navbar-form navbar-left" id="uploadFileForm"> -->
 					<div class="form-group">
 						<input type="file" name="file" accept="image/*"
 							aria-describedby="basic-addon2" id="uploadFileInput"
@@ -49,12 +48,15 @@
 					</div>
 
 					<div class="form-group">
-						<input id="fileName" type="text" name="name"
+						<input id="fileName" type="text" name="displayName"
 							placeholder="Bildname ..." />
 					</div>
 					<div class="form-group">
 						<button type="submit" class="btn btn-default btn-sm"
-							value="Hochladen" name="addImage"></button>
+							value="Hochladen" name="addImage">
+							<span class="glyphicon glyphicon-upload" aria-hidden="true"></span>
+							Upload
+						</button>
 					</div>
 				</form>
 				<form class="navbar-form navbar-left" role="search">
@@ -87,8 +89,11 @@
 						style="padding: 5% 5% 5% 5%; width: 150px; height: 150px; margin: 10% 10% 10% 10%">
 						<img class="img-responsive img-thumbnail" th:alt="${image.name}"
 							th:src="@{'data:image/png;base64,'+ ${image.encodeBase64()}}" />
-						<p class="imageName" th:text="${image.name}">(Image name
-							missing!)</p>
+						<p class="imageName">
+							<span th:text="${image.displayName}"> (Image name
+								missing!) </span> <br /> <span th:text="'('+${image.name}+')'">
+								(Image name missing!) </span>
+						</p>
 					</div>
 				</div>
 			</div>

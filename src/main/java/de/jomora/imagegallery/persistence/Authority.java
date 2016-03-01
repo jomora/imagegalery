@@ -21,7 +21,7 @@ import javax.persistence.Table;
 public class Authority  implements Serializable{
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_name",referencedColumnName="user_name",nullable = false)
+	@JoinColumn(name = "customer_id",referencedColumnName="id",nullable = false)
 	private Customer customer;
 	
 	@Id

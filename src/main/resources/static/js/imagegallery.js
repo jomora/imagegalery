@@ -1,4 +1,27 @@
-
+$(document).ready(function(){
+	$("#uploadForm").on("submit",(function (e){
+		e.preventDefault();
+		var formData = new FormData();
+		formData.append('file',$("#fileInput")[0].files[0]);
+		
+		$.ajax({
+			type: 'POST',
+			url: 'http://localhost:8080/gallery',
+			data: formData,
+			cache: false,
+			contentType: false,
+			processData: false,
+			crossDomain: true,
+			success: function(data){
+				console.log("success");
+			},
+			error:function (data){
+				console.log("error" + data);
+			}
+		});
+	}));
+	
+});
 
 var date = new Date();
 function startSearch() {
@@ -21,7 +44,7 @@ function search(elem) {
 				$(this).show();
 			});
 		} else {
-			var names = $('.imageCol > div > .imageName');
+			var names = $('.imageName');
 			names.each(function() {
 				if (!$(this).text().toLowerCase().match(
 						elem.value.toLowerCase())) {
@@ -37,10 +60,3 @@ function search(elem) {
 	}, 200);
 }
 
-
-
-function upload(elem) {
-	var path = 'http://localhost:8080/gallery/search/' + elem.value;
-	console.log(path);
-	$('#imageRow').load(path)
-}
